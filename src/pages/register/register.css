@@ -1,0 +1,49 @@
+.register-container{
+    border: 1px solid #08e2ff;
+    width: 60%;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.label-align{
+    width: 200px;
+    font-size: 0.8rem;
+}
+
+.form-input{
+    padding: 0.3rem 0.5rem;
+    width: 260px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    border: 1px solid #a9a7a7;
+}
+
+.form-input:focus{
+    outline: 1px solid #4be451;
+    border: 1px solid #4be451;
+}
+
+.button-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.submit-btn{
+    border: none;
+    background: #79ff29;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    color: #033103;
+}
+
+.checkbox-align{
+    margin-right: 1.3rem;
+}
+
+.required{
+    color: red;
+}
+.error-phrase{
+    margin: 0.2rem 0px 0.5rem 200px
+}

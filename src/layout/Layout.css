@@ -1,0 +1,19 @@
+ul{
+    display: flex;
+    margin: 0;
+    padding: 0.7rem;
+    list-style-type: none;
+    gap: 2rem;
+    background-color: #9b9b9b;
+}
+
+li > a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.5rem;
+}
+
+.active{
+    color: black;
+    text-decoration: underline;
+}
