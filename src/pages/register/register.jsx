@@ -5,6 +5,7 @@ import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "./register.css";
 import { ToastContainer, toast, Bounce } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
     first_name : z
@@ -74,23 +75,40 @@ export default function Register(){
         }
     })
 
+    const navigate = useNavigate();
+
     function submit(data){
         const request = data;
         axios.post("http://localhost:3300/customer", request)
         .then(res=>{
-            console.log(res);
-            reset();
-            toast.success('User created successfully!', {
-                position: "top-right",
-                autoClose: 4000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                transition: Bounce,
-                });
+
+            const token = res.data.token;
+            const accountRequest = {
+                email: request.email,
+                name: `${request.first_name} ${request.middle_name} ${request.last_name}`
+            }
+            axios.post("http://localhost:3300/account", 
+            accountRequest,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then(response => {
+                reset();
+                toast.success('User created successfully!', {
+                    position: "top-right",
+                    autoClose: 4000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    transition: Bounce,
+                    });
+                navigate("/login");
+            })
+
         })
     }
 

@@ -17,3 +17,15 @@ li > a {
     color: black;
     text-decoration: underline;
 }
+
+.navigation-bar{
+    display: flex;
+}
+
+.left-nav{
+    flex: 7;
+}
+
+.right-nav{
+    flex: 1;
+}
