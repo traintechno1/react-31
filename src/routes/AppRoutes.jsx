@@ -7,6 +7,7 @@ import AboutCompany from "../pages/about/about-company/AboutCompany";
 import NotFound from "../pages/not-found/NotFound";
 import Register from "../pages/register/register";
 import Dashboard from "../pages/dashboard/Dashboard";
+import { ProtectedRoute } from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
     {
@@ -44,8 +45,14 @@ export const router = createBrowserRouter([
                 element: <Register />
             },
             {
-                path: "dashboard",
-                element: <Dashboard />
+                // path: "dashboard",
+                element: <ProtectedRoute />,
+                children: [
+                    {
+                        path: 'dashboard',
+                        element: <Dashboard />
+                    }
+                ]
             },
             {
                 path: "*",

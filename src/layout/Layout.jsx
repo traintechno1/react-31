@@ -1,7 +1,15 @@
-import {NavLink, Outlet} from "react-router-dom";
+import {NavLink, Outlet, useNavigate} from "react-router-dom";
 import "../layout/Layout.css";
 
 export default function Layout(){
+
+    const navigate = useNavigate();
+    const token = localStorage.getItem("token");
+    const logoutUser = () => {
+        localStorage.removeItem("token");
+        navigate("/login");
+    }
+
     return(
         <>
             <nav>
@@ -19,10 +27,18 @@ export default function Layout(){
                     </div>
                     <div className="right-nav">
 
-                        <ul>
-                            <li><NavLink to="/login">Login</NavLink></li>
-                            <li><NavLink to="/register">Register</NavLink></li>
-                        </ul>
+                        {
+                            token ? 
+                                <ul>
+                                    <li onClick={logoutUser}><a>Logout</a></li>
+                                </ul>
+                                :
+                                <ul>
+                                    <li><NavLink to="/login">Login</NavLink></li>
+                                    <li><NavLink to="/register">Register</NavLink></li>
+                                </ul>
+                        }
+
                     </div>
                 </div>
             </nav>

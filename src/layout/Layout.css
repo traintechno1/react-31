@@ -6,6 +6,9 @@ ul{
     gap: 2rem;
     background-color: #9b9b9b;
 }
+li{
+    cursor: pointer;
+}
 
 li > a {
     color: white;
