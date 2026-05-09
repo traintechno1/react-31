@@ -1,12 +1,23 @@
 
 import { Outlet, Link} from "react-router-dom";
 import "../about/About.css";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function About(){
     let isAllowed = true;
+    const {counter, setCounter} = useContext(AuthContext);
+    const incrementCount = () =>{
+        setCounter(c => c + 1);
+    }
+
     return(
         <>
             <h1>About Page</h1>
+            <div>   
+                <button onClick={incrementCount}>Increment</button>
+                <p>Counter value is : {counter}</p>
+            </div>
             <nav>
                 <ul>
                     <li><Link to={"company"}>Company</Link></li>

@@ -1,9 +1,11 @@
 import axios from "axios"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { jwtDecode } from 'jwt-decode';
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AuthContext } from "../../context/AuthContext";
+import { useSelector } from "react-redux";
 
 const formSchema = z.object({
     receiver_email: z
@@ -14,13 +16,18 @@ const formSchema = z.object({
     amount: z.string()
 })
 
-
 export default function Dashboard(){
-    const token = localStorage.getItem("token");
+    const {token} = useContext(AuthContext);
     const [senderEmail, setSenderEmail] = useState("");
+    const [transactions, setTransactions] = useState([]);
+    let [decodedToken, setDecodedToken] = useState("");
+    const {counter} = useContext(AuthContext)
+    const description = useSelector((state)=> state.description.d);
+
     useEffect(()=>{
-        const decodedToken = jwtDecode(token);
-        setSenderEmail(decodedToken.email);
+        setDecodedToken(jwtDecode(token));
+        setSenderEmail(jwtDecode(token).email);
+        getTransactions();
     }, [])
 
     const {register, handleSubmit, formState : {errors}, reset} = useForm({
@@ -35,15 +42,48 @@ export default function Dashboard(){
     function submit(data){
         const transactionRequest = {
             sender_email: senderEmail,
-            amount: data.amount,
+            amount: +data.amount,
             receiver_email: data.receiver_email
         }
-        console.log(transactionRequest);
+        postTransaction(transactionRequest);
+    }
+
+    function postTransaction(request){
+        axios.post("http://localhost:3300/transact",
+        request,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(res=>{
+            getTransactions();
+        })
+    }
+
+    function getTransactions(){
+        axios.get(`http://localhost:3300/transact/${jwtDecode(token).email}`,
+        {
+            headers: {
+            Authorization: `Bearer ${token}`
+            }
+        }
+        )
+        .then(res=> {
+            setTransactions(res.data.transactions)
+        })
     }
 
     return(
         <>
-            <h1>Transaction Page</h1>
+            <div className="d-flex justify-content-between mx-3">
+                <h3>Transaction Page</h3>
+                <h3>Welcome, {decodedToken.full_name}</h3>
+            </div>
+            <div>
+                <p>The counter value is: {counter}</p>
+                <p>Description is: {description}</p>
+            </div>
             <form onSubmit={handleSubmit(submit)}>
                 <label className="label-align" htmlFor="receiver_email">Receiver Email<span className="required">*</span>:</label>
                 <input
@@ -70,7 +110,33 @@ export default function Dashboard(){
                 <div className="button-container">
                     <button type="submit" className="submit-btn">Send Money</button>
                 </div>
-            </form> 
+            </form>
+
+            <div>
+                <h3>Transactions</h3>
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Counter Party</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            {
+                                transactions.map((tx=>{
+                                   return <tr>
+                                        <td className="p-3" scope="row">{tx.counterparty}</td>
+                                        <td className={tx.type == "credit" ? "bg-success-subtle": "bg-danger-subtle" }>{tx.amount}</td>
+                                        <td className="p-3">{tx.timestamp}</td>
+                                        <td className="p-3">{tx.type}</td>
+                                    </tr>
+                                }))
+                            }
+                    </tbody>
+                </table>
+            </div>
         </>
     )
 }

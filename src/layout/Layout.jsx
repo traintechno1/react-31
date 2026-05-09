@@ -1,12 +1,15 @@
 import {NavLink, Outlet, useNavigate} from "react-router-dom";
 import "../layout/Layout.css";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Layout(){
 
     const navigate = useNavigate();
-    const token = localStorage.getItem("token");
+    const {token, setToken} = useContext(AuthContext);
+
     const logoutUser = () => {
-        localStorage.removeItem("token");
+        setToken(null);
         navigate("/login");
     }
 

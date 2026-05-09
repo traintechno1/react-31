@@ -4,6 +4,8 @@ import axios from "axios";
 import { z } from "zod";
 import { Bounce, ToastContainer, toast} from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 
 const formSchema = z.object({
@@ -25,13 +27,14 @@ export default function Login(){
             password: ""
         }
     })
+    const {setToken} = useContext(AuthContext);
 
     const navigate = useNavigate();
 
     function submit(data){
         axios.post("http://localhost:3300/customer/login", data)
         .then(res=>{
-            localStorage.setItem("token", res.data.token);
+            setToken(res.data.token);
             reset();
             navigate("/dashboard");
         }).catch(error=>{
